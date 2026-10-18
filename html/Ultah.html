@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selamat Ulang Tahun!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS untuk tampilan Estetik dan Animasi */
+        :root {
+            --primary-color: #ff69b4; /* Pink (Estetik) */
+            --secondary-color: #ffe4e1; /* Misty Rose */
+            --text-color: #333;
+            --font-fancy: 'Pacifico', cursive;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: var(--secondary-color);
+            font-family: var(--font-body);
+            color: var(--text-color);
+            overflow: hidden; /* Menyembunyikan overflow dari elemen balon/confetti */
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 90%;
+            z-index: 10;
+        }
+
+        h1 {
+            font-family: var(--font-fancy);
+            color: var(--primary-color);
+            font-size: 3.5em;
+            margin-bottom: 5px;
+            animation: bounce 1s infinite alternate; /* Animasi berdetak */
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-top: 5px;
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff0f5; /* Lavender Blush */
+            border-radius: 10px;
+            border-left: 5px solid var(--primary-color);
+            font-style: italic;
+        }
+
+        /* Animasi */
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+
+        /* Efek Balon / Confetti (Sederhana) */
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #ffb6c1; /* Light Pink */
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: fall 10s linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh) translateX(0); opacity: 0; }
+            5% { opacity: 1; }
+            100% { transform: translateY(100vh) translateX(200px); opacity: 0; }
+        }
+
+        /* Variasi animasi untuk ilusi "acak" */
+        .confetti:nth-child(2n) {
+            background-color: #add8e6; /* Light Blue */
+            animation-duration: 12s;
+            animation-delay: 2s;
+            left: 10%;
+        }
+        .confetti:nth-child(3n) {
+            background-color: #90ee90; /* Light Green */
+            animation-duration: 8s;
+            animation-delay: 4s;
+            left: 50%;
+        }
+        .confetti:nth-child(5n) {
+            background-color: #ffd700; /* Gold */
+            animation-duration: 15s;
+            animation-delay: 0s;
+            left: 90%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="confetti" style="left: 5%; animation-delay: 1s;"></div>
+    <div class="confetti" style="left: 15%; animation-delay: 3s;"></div>
+    <div class="confetti" style="left: 25%; animation-delay: 0s;"></div>
+    <div class="confetti" style="left: 35%; animation-delay: 5s;"></div>
+    <div class="confetti" style="left: 45%; animation-delay: 2s;"></div>
+    <div class="confetti" style="left: 55%; animation-delay: 4s;"></div>
+    <div class="confetti" style="left: 65%; animation-delay: 1s;"></div>
+    <div class="confetti" style="left: 75%; animation-delay: 3s;"></div>
+    <div class="confetti" style="left: 85%; animation-delay: 0s;"></div>
+
+    <div class="container">
+        <h1 id="greeting">Selamat Ulang Tahun Cintaku</h1>
+        <p>For you </p>
+        <p>🥳🎉Fitri Islami🥳🎉</p>
+
+        <div class="message">
+            <p id="typed-text">"Selamat ulang tahun untuk orang yang membuat hidupku terasa seperti dongeng terindah. Setiap tahun bersamamu adalah babak favoritku. Terima kasih telah menjadi rumah bagiku. Semoga di usia barumu ini, semua mimpimu terwujud, dan kita bisa terus merayakan hidup bersama hingga menua nanti.
+                <br>Selamat ulang tahun untuk orang yang membuat hidupku terasa seperti dongeng terindah. Setiap tahun bersamamu adalah babak favoritku. Terima kasih telah menjadi rumah bagiku. Semoga di usia barumu ini, semua mimpimu terwujud, dan kita bisa terus merayakan hidup bersama hingga menua nanti."</br></p>
+            </p>
+            <p>🥳🎉🎊</p>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript untuk efek "typing text" yang berjalan
+        const textElement = document.getElementById('typed-text');
+        const textToType = textElement.textContent; // Ambil teks asli
+        textElement.textContent = ''; // Kosongkan teks
+
+        let charIndex = 0;
+
+        function typeText() {
+            if (charIndex < textToType.length) {
+                textElement.textContent += textToType.charAt(charIndex);
+                charIndex++;
+                setTimeout(typeText, 50); // Kecepatan ketikan (50ms)
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ganti placeholder nama
+            const namePlaceholder = document.querySelector('p:nth-child(2)');
+            namePlaceholder.innerHTML = namePlaceholder.innerHTML.replace('[Nama Orang yang Berulang Tahun]', 'Sahabatku');
+            
+            // Mulai efek ketikan setelah halaman dimuat
+            typeText();
+        });
+    </script>
+</body>
+</html>

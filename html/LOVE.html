@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LOVE Berjalan — Animasi HTML/CSS</title>
+  <style>
+    /* Reset sederhana */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      height: 100%;
+      font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: radial-gradient(ellipse at 10% 10%, #ffe6f0 0%, transparent 15%),
+                  radial-gradient(ellipse at 90% 90%, #fff0e6 0%, transparent 12%),
+                  linear-gradient(180deg,#ff9ab3 0%, #ff2d6f 100%);
+      overflow: hidden;
+      color: white;
+    }
+
+    /* Kontainer pusat */
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 800px;
+    }
+
+    /* Kotak yang memuat tulisan LOVE yang berjalan */
+    .track {
+      position: relative;
+      width: 90%;
+      max-width: 1100px;
+      height: 140px;
+      overflow: hidden;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+    }
+
+    /* Baris bergerak (kanan-ke-kiri) */
+    .ticker {
+      display: inline-flex;
+      align-items: center;
+      gap: 48px;
+      padding-left: 100%; /* mulai dari luar kanan */
+      animation: moveLeft 12s linear infinite;
+      will-change: transform;
+    }
+
+    /* Tulisan LOVE (besar) */
+    .love {
+      font-size: clamp(42px, 9vw, 96px);
+      font-weight: 900;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: #fff;
+      text-shadow:
+        0 4px 18px rgba(255,45,111,0.35),
+        0 1px 0 rgba(255,255,255,0.06) inset;
+      transform-origin: center;
+      padding: 18px 28px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Hati kecil di sebelah LOVE (ikon) */
+    .heart {
+      width: 0.9em;
+      height: 0.9em;
+      position: relative;
+      transform: translateY(1px) scale(1.0);
+      display: inline-block;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 0;
+      width: 50%;
+      height: 80%;
+      background: linear-gradient(180deg,#ff436b,#ff2d6f);
+      border-radius: 50%;
+      transform-origin: center;
+    }
+    .heart::before { transform: translateX(-50%) rotate(-45deg); }
+    .heart::after  { transform: translateX(-50%) rotate(45deg); }
+
+    /* Efek scale ringan saat melewati tengah */
+    .ticker .love {
+      animation: pulse 1.2s ease-in-out infinite;
+      animation-delay: calc(var(--i,0) * 0.05s);
+    }
+
+    /* Animasi move: mulai dari kanan (translateX(0) after padding) -> ke kiri */
+    @keyframes moveLeft {
+      0% { transform: translateX(0); }        /* padding-left membuat start di kanan layar */
+      100% { transform: translateX(-100%); } /* bergerak ke kiri penuh */
+    }
+
+    /* Pulse halus tiap elemen love (untuk variasi) */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%      { transform: scale(1.06); }
+    }
+
+    /* Hati mengambang di belakang: beberapa layer */
+    .floating-hearts {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+
+    .floating-hearts i {
+      position: absolute;
+      display: block;
+      width: 26px;
+      height: 26px;
+      transform-origin: center;
+      opacity: 0.95;
+      animation: floatUp linear infinite;
+      background: transparent;
+      filter: drop-shadow(0 6px 16px rgba(255,45,111,0.12));
+    }
+
+    /* Membuat variasi hati dengan pseudo-elemen */
+    .floating-hearts i::before,
+    .floating-hearts i::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 10%;
+      width: 50%;
+      height: 70%;
+      background: linear-gradient(180deg,#ff8ab0,#ff2d6f);
+      border-radius: 50%;
+      transform-origin: center;
+    }
+    .floating-hearts i::before { transform: translateX(-50%) rotate(-45deg); }
+    .floating-hearts i::after  { transform: translateX(-50%) rotate(45deg); }
+
+    /* Animasi naik dan fade */
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.9) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-110vh) scale(1.05) rotate(18deg);
+        opacity: 0;
+      }
+    }
+
+    /* Footer kecil */
+    .caption {
+      position: absolute;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      opacity: 0.9;
+      color: rgba(255,255,255,0.9);
+      text-shadow: 0 1px 0 rgba(0,0,0,0.25);
+      letter-spacing: 0.6px;
+    }
+
+    /* Responsif: jika layar sempit, perpendek track height */
+    @media (max-width:480px) {
+      .track { height: 110px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage" role="main" aria-label="Animasi LOVE berjalan">
+    <!-- Lapisan hati mengambang di belakang -->
+    <div class="floating-hearts" aria-hidden="true">
+      <!-- Kita buat beberapa elemen <i> dengan posisi & durasi berbeda -->
+      <i style="left:6%;    bottom:-10%; width:18px; height:18px; animation-duration:9s; animation-delay:0s;"></i>
+      <i style="left:18%;   bottom:-16%; width:22px; height:22px; animation-duration:11s; animation-delay:1.2s;"></i>
+      <i style="left:30%;   bottom:-8%;  width:28px; height:28px; animation-duration:14s; animation-delay:0.6s;"></i>
+      <i style="left:44%;   bottom:-12%; width:20px; height:20px; animation-duration:10s; animation-delay:2s;"></i>
+      <i style="left:58%;   bottom:-14%; width:24px; height:24px; animation-duration:12s; animation-delay:1s;"></i>
+      <i style="left:72%;   bottom:-9%;  width:30px; height:30px; animation-duration:15s; animation-delay:0.4s;"></i>
+      <i style="left:86%;   bottom:-18%; width:18px; height:18px; animation-duration:8.6s; animation-delay:1.7s;"></i>
+    </div>
+
+    <div class="track" aria-hidden="false">
+      <!-- ticker berisi beberapa instance "LOVE" agar terlihat berulang saat bergerak -->
+      <div class="ticker" role="list" aria-label="Kata LOVE berjalan">
+        <!-- ulang beberapa kali supaya terasa kontinuitas -->
+        <div class="love" role="listitem" style="--i:0;">
+          <span class="text">LOVE</span>
+          <span class="heart" aria-hidden="true"></span>
+        </div>
+
+        <div class="love" role="listitem" style="--i:1;">
+          <span class="text">LOVE</span>
+          <span class="heart" aria-hidden="true"></span>
+        </div>
+
+        <div class="love" role="listitem" style="--i:2;">
+          <span class="text">LOVE</span>
+          <span class="heart" aria-hidden="true"></span>
+        </div>
+
+        <div class="love" role="listitem" style="--i:3;">
+          <span class="text">LOVE</span>
+          <span class="heart" aria-hidden="true"></span>
+        </div>
+
+        <div class="love" role="listitem" style="--i:4;">
+          <span class="text">LOVE</span>
+          <span class="heart" aria-hidden="true"></span>
+        </div>
+
+        <!-- Duplikat lagi untuk memastikan loop tidak kosong di tengah -->
+        <div class="CAHYO" role="listitem" style="--i:5;">
+          <span class="text">LOVE</span>
+          <span class="heart" aria-hidden="true"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="caption">Tekan refresh jika ingin melihat pola lainnya ✨</div>
+  </div>
+
+  <!-- Opsional: sedikit JS untuk randomize durasi/posisi hati (tidak perlu agar script utama tetap berfungsi) -->
+  <script>
+    // Membuat variasi acak pada elemen floating hearts (opsional)
+    (function() {
+      const items = document.querySelectorAll('.floating-hearts i');
+      items.forEach((el, idx) => {
+        const dur = 8 + Math.random() * 9; // 8s - 17s
+        const delay = -(Math.random() * 6); // negative delays untuk mulai 'random' di tengah animasi
+        el.style.animationDuration = dur + 's';
+        el.style.animationDelay = delay + 's';
+        el.style.transform = `translateY(0) rotate(${(Math.random()*40)-20}deg)`;
+      });
+
+      // Agar ticker tampak tak terputus, kita bisa menggandakan konten ketika ukuran layar besar
+      const ticker = document.querySelector('.ticker');
+      // Jika butuh, uncomment baris di bawah untuk menggandakan konten agar loop lebih mulus
+      // ticker.innerHTML += ticker.innerHTML;
+    })();
+  </script>
+</body>
+</html>
